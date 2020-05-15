@@ -82,7 +82,8 @@ extern "C" {
 #define C(I,J) c[(I)-1 + ((J)-1)* ( *ldc)]
 
 #define STRINGIZE(x) #x
-#define LOG(format, ...)  fprintf (stderr, format  , ##__VA_ARGS__)
+// #define LOG(format, ...)  fprintf (stderr, format  , ##__VA_ARGS__)
+#define LOG(format, ...)
 #define ERROR_LOG(format, ...)  fprintf (stderr,"Error: " format "\n", ##__VA_ARGS__)
 #define PASS_LOG(format, ...)  fprintf (stderr,"Passed: " format "\n", ##__VA_ARGS__)    
 
