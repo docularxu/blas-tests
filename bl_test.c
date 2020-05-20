@@ -348,6 +348,7 @@ void ref_scal(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_x) {
 #endif  
 }
 
+#ifndef BLIS_ENABLE_BLAS
 unsigned char lsame_(char *ca, char *cb) {
 
 
@@ -425,6 +426,17 @@ unsigned char lsame_(char *ca, char *cb) {
     return ret_val;
 } /* lsame_ */
 
+unsigned char REF_LSAME(char *ca, char *cb) {
+	return lsame_(ca, cb);
+}
+#else   /* defined BLIS_ENABLE_BLAS */
+
+unsigned char REF_LSAME(char *ca, char *cb) {
+	return lsame_(ca, cb, 1, 1);
+}
+
+#endif  /* BLIS_ENABLE_BLAS */
+
 //ref gem
 
 int ref_gemm(char *transa, char *transb, int *m, int *
@@ -442,8 +454,8 @@ int ref_gemm(char *transa, char *transb, int *m, int *
     BLASLONG nrowa, nrowb;
 
 
-    nota = lsame_(transa, "N");
-    notb = lsame_(transb, "N");
+    nota = REF_LSAME(transa, "N");
+    notb = REF_LSAME(transb, "N");
     if (nota) {
         nrowa = *m;
         ncola = *k;
@@ -459,9 +471,9 @@ int ref_gemm(char *transa, char *transb, int *m, int *
 
 
     info = 0;
-    if (!nota && !lsame_(transa, "C") && !lsame_(transa, "T")) {
+    if (!nota && !REF_LSAME(transa, "C") && !REF_LSAME(transa, "T")) {
         info = 1;
-    } else if (!notb && !lsame_(transb, "C") && !lsame_(transb,
+    } else if (!notb && !REF_LSAME(transb, "C") && !REF_LSAME(transb,
             "T")) {
         info = 2;
     } else if (*m < 0) {
@@ -668,10 +680,10 @@ int ref_zgemm(char *transa, char *transb, int *m, int *
     BLASLONG i, j, l, ncola;
     BLASLONG nrowa, nrowb;
 
-    nota = lsame_(transa, "N");
-    notb = lsame_(transb, "N");
-    conja = lsame_(transa, "C");
-    conjb = lsame_(transb, "C");
+    nota = REF_LSAME(transa, "N");
+    notb = REF_LSAME(transb, "N");
+    conja = REF_LSAME(transa, "C");
+    conjb = REF_LSAME(transb, "C");
     if (nota) {
 	nrowa = *m;
 	ncola = *k;
@@ -688,9 +700,9 @@ int ref_zgemm(char *transa, char *transb, int *m, int *
 /*     Test the input parameters. */
 
     info = 0;
-    if (! nota && ! conja && ! lsame_(transa, "T")) {
+    if (! nota && ! conja && ! REF_LSAME(transa, "T")) {
 	info = 1;
-    } else if (! notb && ! conjb && ! lsame_(transb, "T")) {
+    } else if (! notb && ! conjb && ! REF_LSAME(transb, "T")) {
 	info = 2;
     } else if (*m < 0) {
 	info = 3;
@@ -1184,26 +1196,26 @@ int ref_trmm(char* side, char* uplo, char* transa, char* diag,
     b_offset = 1 + b_dim1;
     b -= b_offset;
     /* Function Body */
-    lside = lsame_(side, "L");
+    lside = REF_LSAME(side, "L");
     if (lside) {
         nrowa = *m;
     }
     else {
         nrowa = *n;
     }
-    nounit = lsame_(diag, "N");
-    upper = lsame_(uplo, "U");
+    nounit = REF_LSAME(diag, "N");
+    upper = REF_LSAME(uplo, "U");
     info = 0;
-    if (!lside && !lsame_(side, "R")) {
+    if (!lside && !REF_LSAME(side, "R")) {
         info = 1;
     }
-    else if (!upper && !lsame_(uplo, "L")) {
+    else if (!upper && !REF_LSAME(uplo, "L")) {
         info = 2;
     }
-    else if (!lsame_(transa, "N") && !lsame_(transa, "T") && !lsame_(transa, "C")) {
+    else if (!REF_LSAME(transa, "N") && !REF_LSAME(transa, "T") && !REF_LSAME(transa, "C")) {
         info = 3;
     }
-    else if (!lsame_(diag, "U") && !lsame_(diag, "N")) {
+    else if (!REF_LSAME(diag, "U") && !REF_LSAME(diag, "N")) {
         info = 4;
     }
     else if (*m < 0) {
@@ -1241,7 +1253,7 @@ int ref_trmm(char* side, char* uplo, char* transa, char* diag,
     }
     /*     Start the operations. */
     if (lside) {
-        if (lsame_(transa, "N")) {
+        if (REF_LSAME(transa, "N")) {
             /*           Form  B := alpha*A*B. */
             if (upper) {
                 i__1 = *n;
@@ -1331,7 +1343,7 @@ int ref_trmm(char* side, char* uplo, char* transa, char* diag,
         }
     }
     else {
-        if (lsame_(transa, "N")) {
+        if (REF_LSAME(transa, "N")) {
             /*           Form  B := alpha*B*A. */
             if (upper) {
                 for (j = *n; j >= 1; --j) {

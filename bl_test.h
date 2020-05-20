@@ -15,10 +15,13 @@
 extern "C" {
 #endif
 
+#ifdef BLIS_H
 
+#define BLASLONG gint_t  // BLIS typedef is gint_t
+#define BLASFUNC(FUNC) FUNC##_
 
+#endif
 
- 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
@@ -107,7 +110,6 @@ extern "C" {
 
     void ref_scal(BLASLONG n, FLOAT *alpha, FLOAT *x, BLASLONG inc_x);
 
-    unsigned char lsame_(char *ca, char *cb);
     int ref_gemm(char *transa, char *transb, int *m, int *
             n, int *k, FLOAT *alpha, FLOAT *a, int *lda, FLOAT *b, int *
             ldb, FLOAT *beta, FLOAT *c, int *ldc);
