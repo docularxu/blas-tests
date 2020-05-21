@@ -6,7 +6,16 @@ k_blocksize=1
 
 # armie -msve-vector-bits=256 -i libinscount_emulated.so -- ./test_bl_dtrmm.x     $k $k
 # ~/qemu.git/aarch64-linux-user/qemu-aarch64 -cpu max,sve256=on ./test_bl_dtrmm.x  $k $k
-CMD_PRFX="/home/guodong/qemu.git/aarch64-linux-user/qemu-aarch64 -cpu max,sve256=on"
+
+# qemu-aarch64: SVE 256
+# CMD_PRFX="/home/guodong/qemu.git/aarch64-linux-user/qemu-aarch64 -cpu max,sve256=on"
+
+# qemu-aarch64: SVE 512
+CMD_PRFX="/home/guodong/qemu.git/aarch64-linux-user/qemu-aarch64 -cpu max,sve512=on"
+
+# no prefix
+# CMD_PRFX=
+
 LOGERR_FILE="logerr.t"
 LOGOUT_FILE="logout.t"
 
