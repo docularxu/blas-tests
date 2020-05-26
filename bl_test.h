@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <math.h>
 #include <float.h>
-#include <blis.h>
 #include <cblas.h>
 #ifndef BL_TEST_H
 #define BL_TEST_H
