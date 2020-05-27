@@ -219,6 +219,8 @@ int main(int argc, char* argv[]) {
         fprintf(stderr, " M=%4d, N=%4d, lda=%4d, ldb=%4d, alpha[0]=%f: \n", (int) m, (int) n, lda, ldb, alpha[0]);
 
     TRMM(&side, &uplo, &trans, &diag, &m, &n, alpha, a, &lda, b, &ldb);
+    fprintf(stderr, "Finishied.\n");
+    break;
 
 #ifndef COMPLEX
     ref_trmm(&side, &uplo, &trans, &diag, &m, &n, alpha, a, &lda, bref, &ldb);
