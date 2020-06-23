@@ -1,5 +1,8 @@
 #include <bl_test.h>
 
+#define __START_TRACE() {asm volatile (".inst 0x2520e020");}
+#define __STOP_TRACE() {asm volatile (".inst 0x2520e040");}
+
 #undef TRMM
 
 #ifndef COMPLEX
@@ -218,7 +221,9 @@ int main(int argc, char* argv[]) {
 
         fprintf(stderr, " M=%4d, N=%4d, lda=%4d, ldb=%4d, alpha[0]=%f: \n", (int) m, (int) n, lda, ldb, alpha[0]);
 
+	__START_TRACE();
     TRMM(&side, &uplo, &trans, &diag, &m, &n, alpha, a, &lda, b, &ldb);
+	__STOP_TRACE();
     fprintf(stderr, "Finishied.\n");
     break;
 
