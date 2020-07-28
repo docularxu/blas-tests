@@ -20,6 +20,20 @@
 
 #endif
 
+int print_matrix(int m, int n, FLOAT *a, int lda)
+{
+    int i, j;
+
+    for(i=0; i<m; i++)
+    {
+        for (j=0; j<n; j++)
+            fprintf(stderr, "%08.5f\t", *(a+i+j*lda));
+        fprintf(stderr, "\n");
+    }
+
+    return 0;
+}
+
 int main(int argc, char* argv[]) {
   FLOAT *a, *b, *bi,*bref;
   FLOAT alpha[] = {1.0, 1.0}; 
@@ -218,17 +232,33 @@ int main(int argc, char* argv[]) {
 
         fprintf(stderr, " M=%4d, N=%4d, lda=%4d, ldb=%4d, alpha[0]=%f: \n", (int) m, (int) n, lda, ldb, alpha[0]);
 
-    TRMM(&side, &uplo, &trans, &diag, &m, &n, alpha, a, &lda, b, &ldb);
+        fprintf(stderr, "Matrix A:\n");
+        print_matrix(m, k, a, lda);
+
+        fprintf(stderr, "Matrix B:\n");
+        print_matrix(k, n, b, ldb);
+
+        TRMM(&side, &uplo, &trans, &diag, &m, &n, alpha, a, &lda, b, &ldb);
+
+        fprintf(stderr, "TRMM result Matrix B:\n");
+        print_matrix(m, n, b, ldb);
 
 #ifndef COMPLEX
-    ref_trmm(&side, &uplo, &trans, &diag, &m, &n, alpha, a, &lda, bref, &ldb);
-#else
-    ref_ztrmm(&side, &uplo, &trans, &diag, &m, &n, alpha, a, &lda, bref, &ldb);
-#endif
-    compare_vals_aggregated(k, m * n, b, 1, bref, 1, STRINGIZE(TRMM));
-  }
+        fprintf(stderr, "Matrix Bref:\n");
+        print_matrix(k, n, bref, ldb);
 
-  return 0;
+        ref_trmm(&side, &uplo, &trans, &diag, &m, &n, alpha, a, &lda, bref, &ldb);
+
+        fprintf(stderr, "ref_trmm result Matrix B:\n");
+        print_matrix(m, n, bref, ldb);
+
+#else
+        ref_ztrmm(&side, &uplo, &trans, &diag, &m, &n, alpha, a, &lda, bref, &ldb);
+#endif
+        compare_vals_aggregated(k, m * n, b, 1, bref, 1, STRINGIZE(TRMM));
+    }
+
+    return 0;
 }
 
 // void main(int argc, char *argv[]) __attribute__((weak, alias("MAIN__")));
